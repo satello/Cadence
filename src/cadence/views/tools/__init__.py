@@ -9,3 +9,4 @@ from cadence.views.tools.databaseManager.DatabaseManagerWidget import DatabaseMa
 from cadence.views.tools.analysis.TrackAnalysisWidget import TrackAnalysisWidget
 from cadence.views.tools.trackwayManager.TrackwayManagerWidget import TrackwayManagerWidget
 from cadence.views.tools.mayaInitializer.MayaIniWidget import MayaIniWidget
+from cadence.views.tools.trackwayVisualizer.TrackwayVisualizerWidget import TrackwayVisualizerWidget

@@ -2056,21 +2056,24 @@ class TrackwayManagerWidget(PyGlassWidget):
             provides a convenient but slightly arcane means to select a given tracksite by selection
             of a spinbox integer value in the UI. """
 
-        if not self._lock():
-            return
-
-        index   = self.trackSiteIndexSbx.value()
-        siteMap = self._trackwayManager.getSiteMap(index)
-
-        if siteMap is None:
-            self.clearTrackSiteUI()
-            self._unlock()
-            return
-
-        # now populate the tracksite information in the UI
-        self.refreshTrackSiteUI(siteMap)
-
+        # if not self._lock():
+        #     return
+        #
+        # index   = self.trackSiteIndexSbx.value()
+        # siteMap = self._trackwayManager.getSiteMap(index)
+        #
+        # if siteMap is None:
+        #     self.clearTrackSiteUI()
+        #     self._unlock()
+        #     return
+        #
+        # # now populate the tracksite information in the UI
+        # self.refreshTrackSiteUI(siteMap)
+        #
+        # self._unlock()
+        self.clearTrackSiteUI()
         self._unlock()
+        return
 
 #___________________________________________________________________________________________________ handleUnlink
     def handleUnlink(self):

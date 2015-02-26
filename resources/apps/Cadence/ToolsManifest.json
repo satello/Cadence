@@ -36,6 +36,12 @@
             "module":"cadence.views.tools.mayaInitializer.MayaIniWidget",
             "name":"Maya Initializer",
             "description":"Modifies your maya installation with the necessary settings and scripts to use Cadence."
+        },
+
+        {   "id":"trackwayVisualizer",
+            "module":"cadence.views.tools.trackwayVisualizer.TrackwayVisualizerWidget",
+            "name":"Trackway Visualizer",
+            "description":"Creates trackway animations following a selected trackway, visualizing uncertainty for each track."
         }
     ]
 }
