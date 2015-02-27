@@ -312,7 +312,7 @@
            <pointsize>12</pointsize>
           </font>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,0,0">
+         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,0,0,0">
           <property name="margin">
            <number>0</number>
           </property>
@@ -544,6 +544,57 @@
                </property>
                <property name="singleStep">
                 <double>0.010000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="displayUncertaintyWidget" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_29">
+             <item>
+              <widget class="QCheckBox" name="displayWidthCkbx">
+               <property name="font">
+                <font>
+                 <family>Abadi MT Condensed Extra Bold</family>
+                 <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Display Width</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="displayLengthCkbx">
+               <property name="font">
+                <font>
+                 <family>Abadi MT Condensed Extra Bold</family>
+                 <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Display Length</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="displayRotationCkbx">
+               <property name="font">
+                <font>
+                 <family>Abadi MT Condensed Extra Bold</family>
+                 <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Display Rotation</string>
                </property>
               </widget>
              </item>

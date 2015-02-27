@@ -43,11 +43,6 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         self.selectCadenceCamBtn.clicked.connect(self.handleCreateCam)
 
-        self.widthUnc, self.lengthUnc, self.rotUnc = 0, 0, 0
-        self.widthUncInput.valueChanged.connect(self.handleWidthUnc)
-        self.lengthUncInput.valueChanged.connect(self.handleLengthUnc)
-        self.rotationUncInput.valueChanged.connect(self.handleRotationUnc)
-
         self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
         self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
         self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
@@ -59,7 +54,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.lastUncBtn.connect(self.handleLastUncBtn)
 
         self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
-        self.displayHeightCkbx.clicked.connect(self.handleDisplayHeight)
+        self.displayLengthCkbx.clicked.connect(self.handleDisplayHeight)
         self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
