@@ -147,16 +147,16 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         self._trackwayVisualizer.selectTrack(track)
 
-<<<<<<< HEAD
     def handleCreateCam(self):
         track = self._trackwayVisualizer.getSelectedTracks()
+        trackway = self._trackwayVisualizer.getSelectedTrackway()
         if len(track) < 1:
             print "No Selection"
         else:
-            newAnimation = CameraAnimation(track[0])
+            newAnimation = CameraAnimation(track[0], trackway)
             newAnimation.createMainCamera()
             newAnimation.positionCamOnTrack()
-=======
+
     def handleWidthUnc(self):
         self.widthUnc = self.widthUncertaintySbx.value()
 

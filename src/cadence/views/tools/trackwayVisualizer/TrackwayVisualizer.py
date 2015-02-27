@@ -127,8 +127,8 @@ class TrackwayVisualizer(object):
         next = cmds.getAttr(track+'.cadence_nextNode')
 
         while next != None:
-            if cmds.getAttr(next+'.cadence_widthUncertainty') >= widthUnc and 
-                cmds.getAttr(next+'.cadence_lengthUncertainty') >= lengthUnc and 
+            if cmds.getAttr(next+'.cadence_widthUncertainty') >= widthUnc and \
+                cmds.getAttr(next+'.cadence_lengthUncertainty') >= lengthUnc and \
                 cmds.getAttr(next+'.cadence_rotationUncertainty') >= rotUnc:
                 return next
             next = cmds.getAttr(next+'.cadence_nextNode')
@@ -138,9 +138,9 @@ class TrackwayVisualizer(object):
     def getPrevUnc(self, track, widthUnc, lengthUnc, rotUnc):
         prev = cmds.getAttr(track+'.cadence_prevNode')
 
-        while prev != None
-            if cmds.getAttr(prev+'.cadence_widthUncertainty') >= widthUnc and 
-                cmds.getAttr(prev+'.cadence_lengthUncertainty') >= lengthUnc and 
+        while prev != None:
+            if cmds.getAttr(prev+'.cadence_widthUncertainty') >= widthUnc and \
+                cmds.getAttr(prev+'.cadence_lengthUncertainty') >= lengthUnc and \
                 cmds.getAttr(prev+'.cadence_rotationUncertainty') >= rotUnc:
                 return prev
             prev = cmds.getAttr(prev+'.cadence_prevNode')
@@ -175,16 +175,28 @@ class TrackwayVisualizer(object):
 
         return t
 
+    def getSelectedTrackway(self):
+        tracks = list()
+        trav = self.getFirstTrack
+
+        while trav != None:
+            tracks.append(trav)
+            trav = self.getNextTrack(trav)
+
+        return tracks
+
 
 class CameraAnimation():
 
-    def __init__(self, starting_track):
+    def __init__(self, starting_track, trackway):
         self._camElevation = 0
         self._camSpeed = 0
         self._camAngle = 0
         self._focalLength = .1
         self._startingTrack = starting_track
+        self._trackway = trackway
         self.mainCam = None
+        self._trackWayCurve = None
 
 
 
@@ -222,12 +234,4 @@ class CameraAnimation():
 
 
 
-    def getSelectedTrackway(self):
-        tracks = list()
-        trav = self.getFirstTrack()
 
-        while trav != None:
-            tracks.append(trav)
-            trav = self.getNextTrack(trav)
-
-        return tracks
