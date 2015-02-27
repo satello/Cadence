@@ -10,6 +10,7 @@ from cadence.enums.TrackPropEnum import TrackPropEnum
 from cadence.enums.SourceFlagsEnum import SourceFlagsEnum
 from cadence.svg.CadenceDrawing import CadenceDrawing
 from cadence.views.tools.trackwayVisualizer.TrackwayVisualizer import TrackwayVisualizer
+from cadence.views.tools.trackwayVisualizer.TrackwayVisualizer import CameraAnimation
 from cadence.views.tools.trackNodeUtils.TrackNodeUtils import TrackNodeUtils
 
 class TrackwayVisualizerWidget(PyGlassWidget):
@@ -39,20 +40,26 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.widthUncertaintySbx.valueChanged.connect(self.handleWidthUnc)
         self.lengthUncertaintySbx.valueChanged.connect(self.handleLengthUnc)
         self.rotationUncertaintySbx.valueChanged.connect(self.handleRotationUnc)
+        self.selectCadenceCamBtn.clicked.connect(self.handleCreateCam)
 
-        # self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
-        # self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
-        # self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
-        # self.lastUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'last.png')))
-        #
-        # self.firstUncBtn.connect(self.handleFirstUncBtn)
-        # self.prevUncBtn.connect(self.handlePrevUncBtn)
-        # self.nextUncBtn.connect(self.handleNextUncBtn)
-        # self.lastUncBtn.connect(self.handleLastUncBtn)
-        #
-        # self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
-        # self.displayHeightCkbx.clicked.connect(self.handleDisplayHeight)
-        # self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
+        self.widthUnc, self.lengthUnc, self.rotUnc = 0, 0, 0
+        self.widthUncInput.valueChanged.connect(self.handleWidthUnc)
+        self.lengthUncInput.valueChanged.connect(self.handleLengthUnc)
+        self.rotationUncInput.valueChanged.connect(self.handleRotationUnc)
+
+        self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
+        self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
+        self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
+        self.lastUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'last.png')))
+
+        self.firstUncBtn.connect(self.handleFirstUncBtn)
+        self.prevUncBtn.connect(self.handlePrevUncBtn)
+        self.nextUncBtn.connect(self.handleNextUncBtn)
+        self.lastUncBtn.connect(self.handleLastUncBtn)
+
+        self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
+        self.displayHeightCkbx.clicked.connect(self.handleDisplayHeight)
+        self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
         self.displayWidth, self.displayHeight, self.displayRotation = False, False, False
@@ -140,6 +147,16 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         self._trackwayVisualizer.selectTrack(track)
 
+<<<<<<< HEAD
+    def handleCreateCam(self):
+        track = self._trackwayVisualizer.getSelectedTracks()
+        if len(track) < 1:
+            print "No Selection"
+        else:
+            newAnimation = CameraAnimation(track[0])
+            newAnimation.createMainCamera()
+            newAnimation.positionCamOnTrack()
+=======
     def handleWidthUnc(self):
         self.widthUnc = self.widthUncertaintySbx.value()
 
@@ -166,3 +183,4 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             self.displayRotation = True
         else:
             self.displayRotation = False
+
