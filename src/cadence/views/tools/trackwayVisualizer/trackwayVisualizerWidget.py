@@ -40,6 +40,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.widthUncertaintySbx.valueChanged.connect(self.handleWidthUnc)
         self.lengthUncertaintySbx.valueChanged.connect(self.handleLengthUnc)
         self.rotationUncertaintySbx.valueChanged.connect(self.handleRotationUnc)
+
         self.selectCadenceCamBtn.clicked.connect(self.handleCreateCam)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0, 0, 0
@@ -147,7 +148,6 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         self._trackwayVisualizer.selectTrack(track)
 
-<<<<<<< HEAD
     def handleCreateCam(self):
         track = self._trackwayVisualizer.getSelectedTracks()
         if len(track) < 1:
@@ -156,7 +156,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             newAnimation = CameraAnimation(track[0])
             newAnimation.createMainCamera()
             newAnimation.positionCamOnTrack()
-=======
+
     def handleWidthUnc(self):
         self.widthUnc = self.widthUncertaintySbx.value()
 
