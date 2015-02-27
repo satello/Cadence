@@ -50,6 +50,26 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         # self.lastUncBtn.connect(self.handleLastUncBtn)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0, 0, 0
+        self.widthUncInput.valueChanged.connect(self.handleWidthUnc)
+        self.lengthUncInput.valueChanged.connect(self.handleLengthUnc)
+        self.rotationUncInput.valueChanged.connect(self.handleRotationUnc)
+
+        self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
+        self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
+        self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
+        self.lastUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'last.png')))
+
+        self.firstUncBtn.connect(self.handleFirstUncBtn)
+        self.prevUncBtn.connect(self.handlePrevUncBtn)
+        self.nextUncBtn.connect(self.handleNextUncBtn)
+        self.lastUncBtn.connect(self.handleLastUncBtn)
+
+        self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
+        self.displayHeightCkbx.clicked.connect(self.handleDisplayHeight)
+        self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
+
+        self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
+        self.displayWidth, self.displayHeight, self.displayRotation = False, False, False
 
     def handleFirstTrackBtn(self):
         """ Get the first track, select the corresponding node, and focus the camera on it. """
@@ -73,7 +93,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             PyGlassBasicDialogManager.openOk(
                 self,
                 'No previous track',
-                '%s is the first in this series' % track.name)
+                '%s is the first in this series' % track)
             return
 
         self._trackwayVisualizer.selectTrack(prev)
@@ -92,7 +112,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             PyGlassBasicDialogManager.openOk(
                 self,
                 'No next track',
-                '%s is the last in this series' % track.name)
+                '%s is the last in this series' % track)
             return
 
         self._trackwayVisualizer.selectTrack(next)
@@ -134,6 +154,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         self._trackwayVisualizer.selectTrack(track)
 
+<<<<<<< HEAD
     def handleCreateCam(self):
         track = self._trackwayVisualizer.getSelectedTracks()
         if len(track) < 1:
@@ -142,3 +163,31 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             newAnimation = CameraAnimation(track[0])
             newAnimation.createMainCamera()
             newAnimation.positionCamOnTrack()
+=======
+    def handleWidthUnc(self):
+        self.widthUnc = self.widthUncInput.value()
+
+    def handleLengthUnc(self):
+        self.lengthUnc = self.lengthUncInput.value()
+
+    def handleRotationUnc(self):
+        self.rotUnc = self.rotationUncInput.value()
+
+    def handleDisplayWidth(self):
+        if self.displayWidthCkbx.isChecked():
+            self.displayWidth = True
+        else:
+            self.displayWidth = False
+
+    def handleDisplayHeight(self):
+        if self.displayHeightCkbx.isChecked():
+            self.displayHeight = True
+        else:
+            self.displayHeight = False
+
+    def handleDisplayRotation(self):
+        if self.displayRotationCkbx.isChecked():
+            self.displayRotation = True
+        else:
+            self.displayRotation = False
+

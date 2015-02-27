@@ -127,9 +127,9 @@ class TrackwayVisualizer(object):
         next = cmds.getAttr(track+'.cadence_nextNode')
 
         while next != None:
-            if cmds.getAttr(next+'.cadence_widthUncertainty') > widthUnc and \
-                cmds.getAttr(next+'.cadence_lengthUncertainty') > lengthUnc and \
-                cmds.getAttr(next+'.cadence_rotationUncertainty') > rotUnc:
+            if cmds.getAttr(next+'.cadence_widthUncertainty') >= widthUnc and 
+                cmds.getAttr(next+'.cadence_lengthUncertainty') >= lengthUnc and 
+                cmds.getAttr(next+'.cadence_rotationUncertainty') >= rotUnc:
                 return next
             next = cmds.getAttr(next+'.cadence_nextNode')
 
@@ -138,10 +138,10 @@ class TrackwayVisualizer(object):
     def getPrevUnc(self, track, widthUnc, lengthUnc, rotUnc):
         prev = cmds.getAttr(track+'.cadence_prevNode')
 
-        while prev != None:
-            if cmds.getAttr(prev+'.cadence_widthUncertainty') > widthUnc and \
-                cmds.getAttr(prev+'.cadence_lengthUncertainty') > lengthUnc and \
-                cmds.getAttr(prev+'.cadence_rotationUncertainty') > rotUnc:
+        while prev != None
+            if cmds.getAttr(prev+'.cadence_widthUncertainty') >= widthUnc and 
+                cmds.getAttr(prev+'.cadence_lengthUncertainty') >= lengthUnc and 
+                cmds.getAttr(prev+'.cadence_rotationUncertainty') >= rotUnc:
                 return prev
             prev = cmds.getAttr(prev+'.cadence_prevNode')
 
@@ -222,3 +222,12 @@ class CameraAnimation():
 
 
 
+    def getSelectedTrackway(self):
+        tracks = list()
+        trav = self.getFirstTrack()
+
+        while trav != None:
+            tracks.append(trav)
+            trav = self.getNextTrack(trav)
+
+        return tracks
