@@ -36,23 +36,23 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.nextBtn.clicked.connect(self.handleNextBtn)
         self.lastBtn.clicked.connect(self.handleLastTrackBtn)
 
-        self.widthUncInput.valueChanged.connect(self.handleWidthUnc)
-        self.lengthUncInput.valueChanged.connect(self.handleLengthUnc)
-        self.rotationUncInput.valueChanged.connect(self.handleRotationUnc)
+        self.widthUncertaintySbx.valueChanged.connect(self.handleWidthUnc)
+        self.lengthUncertaintySbx.valueChanged.connect(self.handleLengthUnc)
+        self.rotationUncertaintySbx.valueChanged.connect(self.handleRotationUnc)
 
-        self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
-        self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
-        self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
-        self.lastUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'last.png')))
-
-        self.firstUncBtn.connect(self.handleFirstUncBtn)
-        self.prevUncBtn.connect(self.handlePrevUncBtn)
-        self.nextUncBtn.connect(self.handleNextUncBtn)
-        self.lastUncBtn.connect(self.handleLastUncBtn)
-
-        self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
-        self.displayHeightCkbx.clicked.connect(self.handleDisplayHeight)
-        self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
+        # self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
+        # self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
+        # self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
+        # self.lastUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'last.png')))
+        #
+        # self.firstUncBtn.connect(self.handleFirstUncBtn)
+        # self.prevUncBtn.connect(self.handlePrevUncBtn)
+        # self.nextUncBtn.connect(self.handleNextUncBtn)
+        # self.lastUncBtn.connect(self.handleLastUncBtn)
+        #
+        # self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
+        # self.displayHeightCkbx.clicked.connect(self.handleDisplayHeight)
+        # self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
         self.displayWidth, self.displayHeight, self.displayRotation = False, False, False
@@ -141,13 +141,13 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self._trackwayVisualizer.selectTrack(track)
 
     def handleWidthUnc(self):
-        self.widthUnc = self.widthUncInput.value()
+        self.widthUnc = self.widthUncertaintySbx.value()
 
     def handleLengthUnc(self):
-        self.lengthUnc = self.lengthUncInput.value()
+        self.lengthUnc = self.lengthUncertaintySbx.value()
 
     def handleRotationUnc(self):
-        self.rotUnc = self.rotationUncInput.value()
+        self.rotUnc = self.rotationUncertaintySbx.value()
 
     def handleDisplayWidth(self):
         if self.displayWidthCkbx.isChecked():
