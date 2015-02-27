@@ -28,8 +28,10 @@ class TrackwayVisualizer(object):
     FIT_FACTOR   = 0.2
     CADENCE_CAM  = 'CadenceCam'
 
+
     def __init__(self):
         self._session = None
+
 
     #___________________________________________________________________________________________________ getFirstTrack
     def getFirstTrack(self):
@@ -172,3 +174,51 @@ class TrackwayVisualizer(object):
             n = self.getNextUnc(t, widthUnc, lengthUnc, rotUnc)
 
         return t
+
+
+class CameraAnimation():
+
+    def __init__(self, starting_track):
+        self._camElevation = 0
+        self._camSpeed = 0
+        self._camAngle = 0
+        self._focalLength = .1
+        self._startingTrack = starting_track
+        self.mainCam = None
+
+
+
+    def setCamElevation(self, height):
+        self._camElevation = height
+    def getCamElevation(self):
+        return self._camElevation
+
+    def setAnimSpeed(self, speed):
+        self._camSpeed = speed
+    def getAnimSpeed(self):
+        return self._camSpeed
+
+    def setAnimAngle(self, angle):
+        self._camAngle = angle
+    def getAnimAngle(self):
+        return self._camAngle
+
+    def setFocalLength(self, length):
+        self._focalLength = length
+    def getFocalLength(self):
+        return self._focalLength
+
+    def createMainCamera(self):
+        self._mainCam = cmds.camera()
+
+    def positionCamOnTrack(self):
+        xPos = cmds.getAttr(self._startingTrack+".translateX")
+        cmds.setAttr(self._mainCam[0]+".translateX", xPos)
+
+        zPos = cmds.getAttr(self._startingTrack+".translateZ")
+        cmds.setAttr(self._mainCam[0]+".translateZ", zPos)
+
+        cmds.setAttr(self.mainCam[0]+".translateY", self._camElevation)
+
+
+

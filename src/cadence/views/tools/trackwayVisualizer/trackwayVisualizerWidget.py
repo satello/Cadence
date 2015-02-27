@@ -10,6 +10,7 @@ from cadence.enums.TrackPropEnum import TrackPropEnum
 from cadence.enums.SourceFlagsEnum import SourceFlagsEnum
 from cadence.svg.CadenceDrawing import CadenceDrawing
 from cadence.views.tools.trackwayVisualizer.TrackwayVisualizer import TrackwayVisualizer
+from cadence.views.tools.trackwayVisualizer.TrackwayVisualizer import CameraAnimation
 from cadence.views.tools.trackNodeUtils.TrackNodeUtils import TrackNodeUtils
 
 class TrackwayVisualizerWidget(PyGlassWidget):
@@ -35,6 +36,8 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.prevBtn.clicked.connect(self.handlePrevBtn)
         self.nextBtn.clicked.connect(self.handleNextBtn)
         self.lastBtn.clicked.connect(self.handleLastTrackBtn)
+
+        self.selectCadenceCamBtn.clicked.connect(self.handleCreateCam)
 
         # self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
         # self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
@@ -130,3 +133,12 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             return
 
         self._trackwayVisualizer.selectTrack(track)
+
+    def handleCreateCam(self):
+        track = self._trackwayVisualizer.getSelectedTracks()
+        if len(track) < 1:
+            print "No Selection"
+        else:
+            newAnimation = CameraAnimation(track[0])
+            newAnimation.createMainCamera()
+            newAnimation.positionCamOnTrack()
