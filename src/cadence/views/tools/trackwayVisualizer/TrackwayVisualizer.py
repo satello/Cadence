@@ -188,17 +188,21 @@ class TrackwayVisualizer(object):
 
 class CameraAnimation():
 
-    def __init__(self, starting_track, trackway):
+    def __init__(self):
         self._camElevation = 0
         self._camSpeed = 0
         self._camAngle = 0
         self._focalLength = .1
-        self._startingTrack = starting_track
-        self._trackway = trackway
+        self._startingTrack = None
+        self._trackway = None
         self._mainCam = None
         self._trackWayCurve = None
 
+    def setStartingTrack(self, track):
+        self._startingTrack = track
 
+    def setTrackway(self, trackway):
+        self._trackway = trackway
 
     def setCamElevation(self, height):
         self._camElevation = height

@@ -26,6 +26,9 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         # create an instance of a TrackwayManager to deal with the database and the Maya scene
         self._trackwayVisualizer = TrackwayVisualizer()
 
+        # create an instance of CameraAnimation to visualize a path
+        self._animation = CameraAnimation()
+
         # provide conventional arrow icons for the navigation buttons
         self.firstBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
         self.prevBtn.setIcon( QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
@@ -41,7 +44,12 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.lengthUncertaintySbx.valueChanged.connect(self.handleLengthUnc)
         self.rotationUncertaintySbx.valueChanged.connect(self.handleRotationUnc)
 
-        self.selectCadenceCamBtn.clicked.connect(self.handleCreateCam)
+        self.elevationSbox.valueChanged.connect(self.handleElevation)
+        self.angleSbox.valueChanged.connect(self.handleAngle)
+        self.speedSbox.valueChanged.connect(self.handleSpeed)
+        self.fLengthSbox.valueChanged.connect(self.handleFocal)
+
+        self.selectTrackwayCamBtn.clicked.connect(self.handleCreateCam)
 
         self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
         self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
@@ -156,11 +164,36 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             print "No Selection"
         else:
             trackway = self._trackwayVisualizer.getSelectedTrackway()
+<<<<<<< HEAD
             newAnimation = CameraAnimation(track[0],trackway)
             newAnimation.createMainCamera()
             newAnimation.positionCamOnTrack()
             newAnimation.makeCurve()
             newAnimation.setToCurve()
+=======
+            self._animation.setTrackway(trackway)
+            self._animation.setStartingTrack(track[0])
+            self._animation.createMainCamera()
+            self._animation.positionCamOnTrack()
+            self._animation.makeCurve()
+
+    def handleElevation(self):
+        elevation = self.elevationSbox.value()
+        self._animation.setCamElevation(elevation)
+
+    def handleAngle(self):
+        angle = self.angleSbox.value()
+        self._animation.setAnimAngle(angle)
+
+    def handleSpeed(self):
+        speed = self.speedSbox.value()
+        self._animation.setAnimSpeed(speed)
+
+    def handleFocal(self):
+        fLength = self.fLengthSbox.value()
+        self._animation.setFocalLength(fLength)
+
+>>>>>>> 732d39f73a1f8e094375dbd5c15264af29e32eb6
 
     def handleWidthUnc(self):
         self.widthUnc = self.widthUncertaintySbx.value()
