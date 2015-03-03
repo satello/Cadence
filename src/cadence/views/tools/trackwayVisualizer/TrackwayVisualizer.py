@@ -232,6 +232,7 @@ class CameraAnimation():
 
         cmds.setAttr(self._mainCam[0]+".translateY", self._camElevation)
 
+
     def makeCurve(self):
         pos = []
         for track in self._trackway:

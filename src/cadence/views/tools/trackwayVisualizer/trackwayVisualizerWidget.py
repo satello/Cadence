@@ -48,10 +48,10 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.nextUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'next.png')))
         self.lastUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'last.png')))
 
-        self.firstUncBtn.connect(self.handleFirstUncBtn)
-        self.prevUncBtn.connect(self.handlePrevUncBtn)
-        self.nextUncBtn.connect(self.handleNextUncBtn)
-        self.lastUncBtn.connect(self.handleLastUncBtn)
+        self.firstUncBtn.clicked.connect(self.handleFirstUncBtn)
+        self.prevUncBtn.clicked.connect(self.handlePrevUncBtn)
+        self.nextUncBtn.clicked.connect(self.handleNextUncBtn)
+        self.lastUncBtn.clicked.connect(self.handleLastUncBtn)
 
         self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
         self.displayLengthCkbx.clicked.connect(self.handleDisplayHeight)
@@ -114,18 +114,25 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self._trackwayVisualizer.selectTrack(track)
 
     def handleNextUncBtn(self):
-        track = self._trackwayVisualizer.getFirstSelectedTrack()
+        track = self._trackwayVisualizer.getLastSelectedTrack()
         next = self._trackwayVisualizer.getNextUnc(track, self.widthUnc, self.lengthUnc, self.rotUnc)
         if next is None:
-            PyGlassBasicDialogManager.openOK(self,"No next track meets uncertainty conditions", '%s is the last in this series' % track)
+            PyGlassBasicDialogManager.openOk(
+                self,
+                'No next track meets uncertainty conditions',
+                '%s is the last in this series' % track)
             return
+
         self._trackwayVisualizer.selectTrack(next)
 
     def handlePrevUncBtn(self):
-        track = self._trackwayVisualizer.getLastSelectedTrack()
+        track = self._trackwayVisualizer.getFirstSelectedTrack()
         prev = self._trackwayVisualizer.getPrevUnc(track, self.widthUnc, self.lengthUnc, self.rotUnc)
         if prev is None:
-            PyGlassBasicDialogManager.openOK(self,"No previous track meets uncertainty conditions", '%s is the first in this series' % track)
+            PyGlassBasicDialogManager.openOk(
+                self,
+                'No previous track meets uncertainty conditions',
+                '%s is the first in this series' % track)
             return
         self._trackwayVisualizer.selectTrack(prev)
 
