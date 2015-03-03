@@ -164,13 +164,6 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             print "No Selection"
         else:
             trackway = self._trackwayVisualizer.getSelectedTrackway()
-<<<<<<< HEAD
-            newAnimation = CameraAnimation(track[0],trackway)
-            newAnimation.createMainCamera()
-            newAnimation.positionCamOnTrack()
-            newAnimation.makeCurve()
-            newAnimation.setToCurve()
-=======
             self._animation.setTrackway(trackway)
             self._animation.setStartingTrack(track[0])
             self._animation.createMainCamera()
@@ -192,8 +185,6 @@ class TrackwayVisualizerWidget(PyGlassWidget):
     def handleFocal(self):
         fLength = self.fLengthSbox.value()
         self._animation.setFocalLength(fLength)
-
->>>>>>> 732d39f73a1f8e094375dbd5c15264af29e32eb6
 
     def handleWidthUnc(self):
         self.widthUnc = self.widthUncertaintySbx.value()
