@@ -206,6 +206,8 @@ class CameraAnimation():
 
     def setCamElevation(self, height):
         self._camElevation = height
+
+
     def getCamElevation(self):
         return self._camElevation
 
@@ -242,6 +244,7 @@ class CameraAnimation():
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
         self._trackWayCurve = cmds.curve(p=pos)
+        cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
 
     def setToCurve(self):
         cmds.select(clear=True)
