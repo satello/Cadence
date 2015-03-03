@@ -181,7 +181,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
     def handleSpeed(self):
         speed = self.speedSbox.value()
-        self._animation.setAnimSpeed(speed)
+        self._animation.setAnimSpeed(speed*24)
 
     def handleFocal(self):
         fLength = self.fLengthSbox.value()

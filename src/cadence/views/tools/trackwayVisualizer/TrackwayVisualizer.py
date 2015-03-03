@@ -216,6 +216,7 @@ class CameraAnimation():
 
     def setAnimAngle(self, angle):
         self._camAngle = angle
+        cmds.setAttr(self._mainCam[0]+".rotateX", self._camAngle)
     def getAnimAngle(self):
         return self._camAngle
 
