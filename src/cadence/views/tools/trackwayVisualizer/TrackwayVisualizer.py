@@ -206,7 +206,8 @@ class CameraAnimation():
 
     def setCamElevation(self, height):
         self._camElevation = height
-
+        if self._trackWayCurve is not None:
+            cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
 
     def getCamElevation(self):
         return self._camElevation
@@ -218,7 +219,9 @@ class CameraAnimation():
 
     def setAnimAngle(self, angle):
         self._camAngle = angle
-        cmds.setAttr(self._mainCam[0]+".rotateX", self._camAngle)
+        if self._mainCam is not None:
+            cmds.setAttr(self._mainCam[0]+".rotateX", self._camAngle)
+
     def getAnimAngle(self):
         return self._camAngle
 
@@ -250,6 +253,5 @@ class CameraAnimation():
     def setToCurve(self):
         cmds.select(clear=True)
         cmds.select(self._mainCam, self._trackWayCurve)
-        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, c=self._trackWayCurve)
-
+        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
 
