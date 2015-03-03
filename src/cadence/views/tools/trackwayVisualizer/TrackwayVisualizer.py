@@ -213,7 +213,7 @@ class CameraAnimation():
         return self._camElevation
 
     def setAnimSpeed(self, speed):
-        self._camSpeed = speed
+        self._camSpeed = speed*24
     def getAnimSpeed(self):
         return self._camSpeed
 
