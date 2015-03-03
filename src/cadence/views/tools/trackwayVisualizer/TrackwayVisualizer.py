@@ -190,7 +190,7 @@ class CameraAnimation():
 
     def __init__(self):
         self._camElevation = 0
-        self._camSpeed = 0
+        self._camSpeed = 20
         self._camAngle = 0
         self._focalLength = .1
         self._startingTrack = None
@@ -246,6 +246,6 @@ class CameraAnimation():
     def setToCurve(self):
         cmds.select(clear=True)
         cmds.select(self._mainCam, self._trackWayCurve)
-        cmds.pathAnimation(self._mainCam, stu = 0, etu = self._camSpeed, c=self._trackWayCurve)
+        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, c=self._trackWayCurve)
 
 
