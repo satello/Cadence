@@ -237,6 +237,11 @@ class CameraAnimation():
         pos = []
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
-        cmds.curve(pos)
+        self._trackWayCurve = cmds.curve(p=pos)
+
+    def setToCurve(self):
+        cmds.select(clear=True)
+        cmds.select(self._mainCam, self._trackWayCurve)
+        cmds.pathAnimation(self._mainCam, stu = 0, etu = self._camSpeed, c=self._trackWayCurve)
 
 

@@ -160,6 +160,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             newAnimation.createMainCamera()
             newAnimation.positionCamOnTrack()
             newAnimation.makeCurve()
+            newAnimation.setToCurve()
 
     def handleWidthUnc(self):
         self.widthUnc = self.widthUncertaintySbx.value()
