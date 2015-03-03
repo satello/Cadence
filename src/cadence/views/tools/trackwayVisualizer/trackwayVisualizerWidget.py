@@ -62,7 +62,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
     def handleFirstTrackBtn(self):
         """ Get the first track, select the corresponding node, and focus the camera on it. """
-        
+
         track = self._trackwayVisualizer.getFirstTrack()
         if track is None:
             return

@@ -177,7 +177,7 @@ class TrackwayVisualizer(object):
 
     def getSelectedTrackway(self):
         tracks = list()
-        trav = self.getFirstTrack
+        trav = self.getFirstTrack()
 
         while trav != None:
             tracks.append(trav)
@@ -195,7 +195,7 @@ class CameraAnimation():
         self._focalLength = .1
         self._startingTrack = starting_track
         self._trackway = trackway
-        self.mainCam = None
+        self._mainCam = None
         self._trackWayCurve = None
 
 
@@ -230,7 +230,7 @@ class CameraAnimation():
         zPos = cmds.getAttr(self._startingTrack+".translateZ")
         cmds.setAttr(self._mainCam[0]+".translateZ", zPos)
 
-        cmds.setAttr(self.mainCam[0]+".translateY", self._camElevation)
+        cmds.setAttr(self._mainCam[0]+".translateY", self._camElevation)
 
 
 
