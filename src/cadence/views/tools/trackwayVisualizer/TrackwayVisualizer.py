@@ -190,7 +190,7 @@ class CameraAnimation():
 
     def __init__(self):
         self._camElevation = 0
-        self._camSpeed = 20
+        self._camSpeed = 120
         self._camAngle = 0
         self._focalLength = .1
         self._startingTrack = None
@@ -218,8 +218,7 @@ class CameraAnimation():
         # Nimble bridge doesn't allow you to use time parameter in cmds.keyframe(), so we resort to creating a new path.
         self._camSpeed = speed
         cmds.delete(self._motionPath)
-        self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
-        cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+        self.setToCurve()
 
     def getAnimSpeed(self):
         return self._camSpeed
@@ -228,6 +227,8 @@ class CameraAnimation():
         self._camAngle = angle
         if self._mainCam is not None:
             cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=-1*self._camAngle, t=self._camSpeed+48)
 
     def getAnimAngle(self):
         return self._camAngle
@@ -262,4 +263,24 @@ class CameraAnimation():
     def setToCurve(self):
         # Nimble bridge doesn't allow you to use std parameter in cmds.pathAnimation
         self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
+        cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=0, t=0)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=0, t=0)
+
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed)
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=0, t=self._camSpeed)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed)
+
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=self._camSpeed+24)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed+24)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed+24)
+
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=-1*self._camAngle, t=self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed+48)
+
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=2*self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=2*self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=0, t=2*self._camSpeed+48)
 
