@@ -197,6 +197,8 @@ class CameraAnimation():
         self._trackway = None
         self._mainCam = None
         self._trackWayCurve = None
+        self._baseTrackwayCurve = None
+        self._motionPath = None
 
     def setStartingTrack(self, track):
         self._startingTrack = track
@@ -213,20 +215,27 @@ class CameraAnimation():
         return self._camElevation
 
     def setAnimSpeed(self, speed):
-        self._camSpeed = speed*24
+        # Nimble bridge doesn't allow you to use time parameter in cmds.keyframe(), so we resort to creating a new path.
+        self._camSpeed = speed
+        cmds.delete(self._motionPath)
+        self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
+        cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+
     def getAnimSpeed(self):
         return self._camSpeed
 
     def setAnimAngle(self, angle):
         self._camAngle = angle
         if self._mainCam is not None:
-            cmds.setAttr(self._mainCam[0]+".rotateX", self._camAngle)
+            cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
 
     def getAnimAngle(self):
         return self._camAngle
 
     def setFocalLength(self, length):
         self._focalLength = length
+        cmds.setAttr(self._mainCam[0]+".focalLength", self._focalLength)
+
     def getFocalLength(self):
         return self._focalLength
 
@@ -242,16 +251,15 @@ class CameraAnimation():
 
         cmds.setAttr(self._mainCam[0]+".translateY", self._camElevation)
 
-
     def makeCurve(self):
         pos = []
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
-        self._trackWayCurve = cmds.curve(p=pos)
+        self._trackWayCurve = cmds.curve(name='camCurve',p=pos)
+        self._baseTrackwayCurve = cmds.duplicate(self._trackWayCurve, name='baseCurve')
         cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
 
     def setToCurve(self):
-        cmds.select(clear=True)
-        cmds.select(self._mainCam, self._trackWayCurve)
-        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
+        # Nimble bridge doesn't allow you to use std parameter in cmds.pathAnimation
+        self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
 
