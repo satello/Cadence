@@ -190,13 +190,15 @@ class CameraAnimation():
 
     def __init__(self):
         self._camElevation = 0
-        self._camSpeed = 20
+        self._camSpeed = 120
         self._camAngle = 0
         self._focalLength = .1
         self._startingTrack = None
         self._trackway = None
         self._mainCam = None
         self._trackWayCurve = None
+        self._baseTrackwayCurve = None
+        self._motionPath = None
 
     def setStartingTrack(self, track):
         self._startingTrack = track
@@ -213,7 +215,10 @@ class CameraAnimation():
         return self._camElevation
 
     def setAnimSpeed(self, speed):
+        # Nimble bridge doesn't allow you to use time parameter in cmds.keyframe(), so we resort to creating a new path.
         self._camSpeed = speed
+        cmds.delete(self._motionPath)
+        self.setToCurve()
 
     def getAnimSpeed(self):
         return self._camSpeed
@@ -221,13 +226,17 @@ class CameraAnimation():
     def setAnimAngle(self, angle):
         self._camAngle = angle
         if self._mainCam is not None:
-            cmds.setAttr(self._mainCam[0]+".rotateX", self._camAngle)
+            cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=-1*self._camAngle, t=self._camSpeed+48)
 
     def getAnimAngle(self):
         return self._camAngle
 
     def setFocalLength(self, length):
         self._focalLength = length
+        cmds.setAttr(self._mainCam[0]+".focalLength", self._focalLength)
+
     def getFocalLength(self):
         return self._focalLength
 
@@ -243,17 +252,36 @@ class CameraAnimation():
 
         cmds.setAttr(self._mainCam[0]+".translateY", self._camElevation)
 
-
     def makeCurve(self):
         pos = []
         pos.append((cmds.getAttr(self._trackway[0]+".translateX")-100,100,cmds.getAttr(self._trackway[0]+".translateZ")-100))
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
-        self._trackWayCurve = cmds.curve(p=pos)
+        self._trackWayCurve = cmds.curve(name='camCurve',p=pos)
+        self._baseTrackwayCurve = cmds.duplicate(self._trackWayCurve, name='baseCurve')
         cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
 
     def setToCurve(self):
-        cmds.select(clear=True)
-        cmds.select(self._mainCam, self._trackWayCurve)
-        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, c=self._trackWayCurve)
+        # Nimble bridge doesn't allow you to use std parameter in cmds.pathAnimation
+        self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
+        cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=0, t=0)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=0, t=0)
+
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed)
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=0, t=self._camSpeed)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed)
+
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=self._camSpeed+24)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed+24)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed+24)
+
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=-1*self._camAngle, t=self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed+48)
+
+        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=2*self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=2*self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='uValue', v=0, t=2*self._camSpeed+48)
 
