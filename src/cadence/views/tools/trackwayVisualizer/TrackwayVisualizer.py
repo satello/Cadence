@@ -213,7 +213,8 @@ class CameraAnimation():
         return self._camElevation
 
     def setAnimSpeed(self, speed):
-        self._camSpeed = speed*24
+        self._camSpeed = speed
+
     def getAnimSpeed(self):
         return self._camSpeed
 
@@ -245,6 +246,7 @@ class CameraAnimation():
 
     def makeCurve(self):
         pos = []
+        pos.append((cmds.getAttr(self._trackway[0]+".translateX")-100,100,cmds.getAttr(self._trackway[0]+".translateZ")-100))
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
         self._trackWayCurve = cmds.curve(p=pos)
@@ -253,5 +255,5 @@ class CameraAnimation():
     def setToCurve(self):
         cmds.select(clear=True)
         cmds.select(self._mainCam, self._trackWayCurve)
-        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
+        cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, c=self._trackWayCurve)
 
