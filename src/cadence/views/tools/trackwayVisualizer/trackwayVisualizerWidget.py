@@ -12,6 +12,7 @@ from cadence.svg.CadenceDrawing import CadenceDrawing
 from cadence.views.tools.trackwayVisualizer.TrackwayVisualizer import TrackwayVisualizer
 from cadence.views.tools.trackwayVisualizer.TrackwayVisualizer import CameraAnimation
 from cadence.views.tools.trackNodeUtils.TrackNodeUtils import TrackNodeUtils
+from nimble import cmds
 
 class TrackwayVisualizerWidget(PyGlassWidget):
 
@@ -50,6 +51,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.fLengthSbox.valueChanged.connect(self.handleFocal)
 
         self.selectTrackwayCamBtn.clicked.connect(self.handleCreateCam)
+        self.selectTrackFromListBtn.clicked.connect(self.handleCreateCamFromList)
 
         self.firstUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'first.png')))
         self.prevUncBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'prev.png')))
@@ -64,6 +66,15 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
         self.displayLengthCkbx.clicked.connect(self.handleDisplayHeight)
         self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
+
+        self.pauseBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'pause.png')))
+        self.playBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'play.png')))
+
+        self.pauseBtn.clicked.connect(self.handlePauseBtn)
+        self.playBtn.clicked.connect(self.handlePlayBtn)
+
+        self.perspCamBtn.clicked.connect(self.handlePerspCamBtn)
+        self.trackCamBtn.clicked.connect(self.handleTrackCamBtn)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
         self.displayWidth, self.displayHeight, self.displayRotation = False, False, False
@@ -213,4 +224,25 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             self.displayRotation = True
         else:
             self.displayRotation = False
+
+    def handlePauseBtn(self):
+        cmds.play(state=False)
+
+    def handlePlayBtn(self):
+        cmds.play(forward=True)
+
+    def handleCreateCamFromList(self):
+        tracks = self._trackwayVisualizer.getSelectedTracks()
+        self._animation.setTrackway(tracks)
+        self._animation.setStartingTrack(self._trackwayVisualizer.getFirstSelectedTrack())
+        self._animation.createMainCamera()
+        self._animation.positionCamOnTrack()
+        self._animation.makeCurve()
+        self._animation.setToCurve()
+
+    def handlePerspCamBtn(self):
+        self._trackwayVisualizer.selectPerspCam()
+
+    def handleTrackCamBtn(self):
+        self._trackwayVisualizer.selectTrackCam(self._animation._mainCam)
 

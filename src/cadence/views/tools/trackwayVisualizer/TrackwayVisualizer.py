@@ -186,6 +186,13 @@ class TrackwayVisualizer(object):
 
         return tracks
 
+    def selectPerspCam(self):
+        cmds.lookThru('persp')
+        self.setCameraFocus()
+
+    def selectTrackCam(self, cam):
+        cmds.lookThru(cam[0])
+        #self.setCameraFocus()
 
 class CameraAnimation():
 
