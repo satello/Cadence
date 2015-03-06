@@ -3,6 +3,7 @@ __author__ = 'Wilson'
 import nimble
 
 from nimble import cmds
+import math
 
 from pyglass.dialogs.PyGlassBasicDialogManager import PyGlassBasicDialogManager
 
@@ -228,7 +229,18 @@ class CameraAnimation():
         if self._mainCam is not None:
             cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
-            cmds.setKeyframe(self._motionPath, at='sideTwist', v=-1*self._camAngle, t=self._camSpeed+48)
+
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*1.0/4)
+
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*3.0/8)
+
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*1.0/2)
+
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle*2.0/3, t=self._camSpeed*5.0/8)
+
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
+
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
     def getAnimAngle(self):
         return self._camAngle
@@ -256,6 +268,24 @@ class CameraAnimation():
         pos = []
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
+        it = reversed(pos)
+        last_vec = [(cmds.getAttr(self._trackway[-2]+".translateX"),0, cmds.getAttr(self._trackway[-2]+".translateZ"))]
+        last_vec += [(cmds.getAttr(self._trackway[-1]+".translateX"),0, cmds.getAttr(self._trackway[-1]+".translateZ"))]
+        #dist = math.sqrt((last_vec[0][0]-last_vec[1][0])**2 + (last_vec[0][1] - last_vec[1][1])**2)
+        dir_vec = tuple([(last_vec[1][i]-last_vec[0][i])/2 for i in range(3)])
+        norm_vec = tuple([-1*dir_vec[2], 0, dir_vec[0]])
+        center_pt = (cmds.getAttr(self._trackway[-1]+".translateX")+dir_vec[0],0, cmds.getAttr(self._trackway[-1]+".translateZ")+dir_vec[2])
+        pos.append(tuple([center_pt[i]+norm_vec[i] for i in range(3)]))
+        pos.append(tuple([center_pt[i]+dir_vec[i] for i in range(3)]))
+        pos.append(tuple([center_pt[i] - norm_vec[i] for i in range(3)]))
+        rev = list()
+        try:
+            while True:
+                rev.append(it.next())
+        except StopIteration:
+            pass
+        pos += rev
+
         self._trackWayCurve = cmds.curve(name='camCurve',p=pos)
         self._baseTrackwayCurve = cmds.duplicate(self._trackWayCurve, name='baseCurve')
         cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
@@ -265,22 +295,16 @@ class CameraAnimation():
         self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
         cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
-        cmds.setKeyframe(self._motionPath, at='upTwist', v=0, t=0)
-        cmds.setKeyframe(self._motionPath, at='uValue', v=0, t=0)
 
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed)
-        cmds.setKeyframe(self._motionPath, at='upTwist', v=0, t=self._camSpeed)
-        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*1.0/4)
 
-        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=self._camSpeed+24)
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed+24)
-        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed+24)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*3.0/8)
 
-        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=self._camSpeed+48)
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=-1*self._camAngle, t=self._camSpeed+48)
-        cmds.setKeyframe(self._motionPath, at='uValue', v=2, t=self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*1.0/2)
 
-        cmds.setKeyframe(self._motionPath, at='upTwist', v=180, t=2*self._camSpeed+48)
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=2*self._camSpeed+48)
-        cmds.setKeyframe(self._motionPath, at='uValue', v=0, t=2*self._camSpeed+48)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle*2.0/3, t=self._camSpeed*5.0/8)
+
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
+
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
