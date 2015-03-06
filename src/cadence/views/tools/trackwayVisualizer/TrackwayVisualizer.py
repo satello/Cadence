@@ -266,6 +266,7 @@ class CameraAnimation():
 
     def makeCurve(self):
         pos = []
+        pos.append((cmds.getAttr(self._trackway[0]+".translateX")-100,100,cmds.getAttr(self._trackway[0]+".translateZ")-100))
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
         it = reversed(pos)
