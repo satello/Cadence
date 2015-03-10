@@ -279,6 +279,8 @@ class CameraAnimation():
         self._trackWayCurve = None
         self._baseTrackwayCurve = None
         self._motionPath = None
+        self._spheres = []
+        self._shaders = []
 
     def setStartingTrack(self, track):
         """
@@ -452,3 +454,39 @@ class CameraAnimation():
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
         # Keep angle at _camAngle to the end of the curve.
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
+
+    def createVisualizerSpheres(self):
+        self._shaders = []
+        self._spheres = []
+        for track in self._trackway:
+            newSphere = cmds.polySphere(r=20)
+            cmds.setAttr(newSphere[0]+".scaleY", 0.5)
+            cmds.setAttr(newSphere[0]+".translateX", cmds.getAttr(track+".translateX"))
+            cmds.setAttr(newSphere[0]+".translateZ", cmds.getAttr(track+".translateZ"))
+            cmds.setAttr(newSphere[0]+".translateY", -10)
+            shader = self.createHotColdShader(cmds.getAttr(track+".cadence_datum"))
+            cmds.select(newSphere)
+            cmds.hyperShade(assign=shader)
+            self._shaders.append(shader)
+            self._spheres.append(newSphere)
+
+
+
+    def createHotColdShader(self, uncertainty):
+        """
+        :param uncertainty: uncertainty value to give ramp different hot:cold ratio
+        :return: shader for track
+
+        color[1] = blue
+        color[0] = red
+        """
+        new_shade = cmds.shadingNode('rampShader', asShader=True)
+        cmds.setAttr(new_shade+".color[0].color_Color", 1,0,0, type="double3")
+        cmds.setAttr(new_shade+".color[1].color_Color", 0,0,1, type="double3")
+        bluePos = 0.65 + (uncertainty/3)
+        cmds.setAttr(new_shade+".color[1].color_Position", bluePos)
+        cmds.setAttr(new_shade+".color[0].color_Position", 1)
+        cmds.setAttr(new_shade+".color[0].color_Interp", 1)
+        cmds.setAttr(new_shade+".color[1].color_Interp", 1)
+        return new_shade
+

@@ -230,6 +230,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             self._animation.positionCamOnTrack()
             self._animation.makeCurve()
             self._animation.setToCurve()
+            self._animation.createVisualizerSpheres()
 
     def handleElevation(self):
         """
