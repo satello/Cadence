@@ -24,6 +24,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self._uiLock  = False
         self._session = None
 
+
         # create an instance of a TrackwayManager to deal with the database and the Maya scene
         self._trackwayVisualizer = TrackwayVisualizer()
 
@@ -64,7 +65,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.lastUncBtn.clicked.connect(self.handleLastUncBtn)
 
         self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
-        self.displayLengthCkbx.clicked.connect(self.handleDisplayHeight)
+        self.displayLengthCkbx.clicked.connect(self.handleDisplayLength)
         self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
 
         self.pauseBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'pause.png')))
@@ -77,7 +78,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.trackCamBtn.clicked.connect(self.handleTrackCamBtn)
 
         self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
-        self.displayWidth, self.displayHeight, self.displayRotation = False, False, False
+        self.displayWidth, self.displayLength, self.displayRotation = False, False, False
 
     def handleFirstTrackBtn(self):
         """ Get the first track, select the corresponding node, and focus the camera on it. """
@@ -181,7 +182,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             self._animation.positionCamOnTrack()
             self._animation.makeCurve()
             self._animation.setToCurve()
-            self._animation.createVisualizerSpheres()
+            self._animation.createVisualizerCylinders()
 
     def handleElevation(self):
         elevation = self.elevationSbox.value()
@@ -213,18 +214,23 @@ class TrackwayVisualizerWidget(PyGlassWidget):
             self.displayWidth = True
         else:
             self.displayWidth = False
+        self._animation.widthUnc = self.displayWidth
 
-    def handleDisplayHeight(self):
-        if self.displayHeightCkbx.isChecked():
-            self.displayHeight = True
+
+    def handleDisplayLength(self):
+        if self.displayLengthCkbx.isChecked():
+            self.displayLength = True
         else:
-            self.displayHeight = False
+            self.displayLength = False
+        self._animation.lengthUnc = self.displayLength
+        self._animation.updateUncDisplay()
 
     def handleDisplayRotation(self):
         if self.displayRotationCkbx.isChecked():
             self.displayRotation = True
         else:
             self.displayRotation = False
+
 
     def handlePauseBtn(self):
         cmds.play(state=False)

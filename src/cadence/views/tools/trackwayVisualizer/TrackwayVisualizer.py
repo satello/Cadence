@@ -209,6 +209,9 @@ class CameraAnimation():
         self._motionPath = None
         self._spheres = []
         self._shaders = []
+        self._maxUncertainty = 0.2
+        self.lengthUnc = False
+        self.widthUnc = False
 
     def setStartingTrack(self, track):
         self._startingTrack = track
@@ -318,20 +321,28 @@ class CameraAnimation():
 
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
-    def createVisualizerSpheres(self):
+    def createVisualizerCylinders(self):
         self._shaders = []
         self._spheres = []
         for track in self._trackway:
-            newSphere = cmds.polySphere(r=20)
+            newSphere = cmds.polyCylinder(r=20)
             cmds.setAttr(newSphere[0]+".scaleY", 0.5)
             cmds.setAttr(newSphere[0]+".translateX", cmds.getAttr(track+".translateX"))
             cmds.setAttr(newSphere[0]+".translateZ", cmds.getAttr(track+".translateZ"))
             cmds.setAttr(newSphere[0]+".translateY", -10)
-            shader = self.createHotColdShader(cmds.getAttr(track+".cadence_datum"))
-            cmds.select(newSphere)
-            cmds.hyperShade(assign=shader)
+            shader = self.createHotColdConstantColor(self.getUnc(track))
+            if self.lengthUnc or self.widthUnc:
+                cmds.select(newSphere)
+                cmds.hyperShade(assign=shader)
             self._shaders.append(shader)
             self._spheres.append(newSphere)
+
+    def createHotColdConstantColor(self, uncertainty):
+        new_shade = cmds.shadingNode('blinn', asShader=True)
+        blue = 1 - ((float(uncertainty)*10)/2)
+        red = 0 + ((float(uncertainty)*10)/2)
+        cmds.setAttr(new_shade+".color", red,0,blue, type="double3")
+        return new_shade
 
 
 
@@ -346,11 +357,42 @@ class CameraAnimation():
         new_shade = cmds.shadingNode('rampShader', asShader=True)
         cmds.setAttr(new_shade+".color[0].color_Color", 1,0,0, type="double3")
         cmds.setAttr(new_shade+".color[1].color_Color", 0,0,1, type="double3")
-        bluePos = 0.65 + (uncertainty/3)
-        cmds.setAttr(new_shade+".color[1].color_Position", bluePos)
+        cmds.setAttr(new_shade+".color[1].color_Position", 0)
         cmds.setAttr(new_shade+".color[0].color_Position", 1)
         cmds.setAttr(new_shade+".color[0].color_Interp", 1)
         cmds.setAttr(new_shade+".color[1].color_Interp", 1)
         return new_shade
+
+    def updateUncDisplay(self):
+        if len(self._shaders) != 0:
+            for i in range(0, len(self._trackway)):
+                track = self._trackway[i]
+                shade = self._shaders[i]
+                cyl = self._spheres[i]
+                blue = 1 - (float(self.getUnc(track))*10)
+                red = 0 + (float(self.getUnc(track))*10)
+                cmds.setAttr(shade+".color", red,0,blue, type="double3")
+                cmds.select(cyl)
+                cmds.hyperShade(assign=shade)
+
+
+
+    def getUnc(self, track):
+        num = 0
+        res = 0
+        if self.lengthUnc:
+            res += cmds.getAttr(track+".cadence_lengthUncertainty")
+            num += 1
+        if self.widthUnc:
+            res += cmds.getAttr(track+".cadence_widthUncertainty")
+            num += 1
+        if num is not 0:
+            return float(res)/num
+        return 0
+
+
+
+
+
 
 
