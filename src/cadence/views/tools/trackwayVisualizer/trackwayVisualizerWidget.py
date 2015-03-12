@@ -226,7 +226,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         Create a trackway camera.
         :return: None.
         """
-
+        self._animation.clear()
         track = self._trackwayVisualizer.getSelectedTracks()
         if len(track) < 1:
             print "No Selection"
@@ -370,14 +370,18 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         Create trackway camera from list of selected tracks.
         :return: None.
         """
-
+        self._animation.clear()
         tracks = self._trackwayVisualizer.getSelectedTracks()
-        self._animation.setTrackway(tracks)
-        self._animation.setStartingTrack(self._trackwayVisualizer.getFirstSelectedTrack())
-        self._animation.createMainCamera()
-        self._animation.positionCamOnTrack()
-        self._animation.makeCurve()
-        self._animation.setToCurve()
+        if len(tracks) < 1:
+            print "No selection."
+        else:
+            self._animation.setTrackway(tracks)
+            self._animation.setStartingTrack(self._trackwayVisualizer.getFirstSelectedTrack())
+            self._animation.createMainCamera()
+            self._animation.positionCamOnTrack()
+            self._animation.makeCurve()
+            self._animation.setToCurve()
+            self._animation.createVisualizerCylinders()
 
     def handlePerspCamBtn(self):
         """
