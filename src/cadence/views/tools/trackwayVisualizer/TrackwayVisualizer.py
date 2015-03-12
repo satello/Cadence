@@ -284,8 +284,6 @@ class CameraAnimation():
         self._maxUncertainty = 0.2
         self.lengthUnc = False
         self.widthUnc = False
-        self._dwell = 120
-
 
     def setStartingTrack(self, track):
         """
@@ -309,6 +307,33 @@ class CameraAnimation():
         self._camElevation = height
         if self._trackWayCurve is not None:
             cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
+
+        tmp = self._trackway
+        if tmp is not None:
+            first_pt = (cmds.getAttr(tmp[0]+".translateX"), 0, cmds.getAttr(tmp[0]+".translateZ"))
+            sec_pt = (cmds.getAttr(tmp[1]+".translateX"), 0, cmds.getAttr(tmp[1]+".translateZ"))
+            prev_vec = tuple([sec_pt[j]-first_pt[j] for j in range(3)])
+            prev_vec = tuple([first_pt[i] - prev_vec[i] for i in range(3)])
+            seclast_pt = (cmds.getAttr(tmp[-2]+".translateX"), 0, cmds.getAttr(tmp[-2]+".translateZ"))
+            last_pt = (cmds.getAttr(tmp[-1]+".translateX"), 0, cmds.getAttr(tmp[-1]+".translateZ"))
+            next_vec = tuple([last_pt[j]-seclast_pt[j] for j in range(3)])
+            next_vec = tuple([last_pt[j]+next_vec[j] for j in range(3)])
+            first = cmds.polySphere(r=1)
+            cmds.move(prev_vec[0], prev_vec[1], prev_vec[2], first)
+            last = cmds.polySphere(r=1)
+            cmds.move(next_vec[0], next_vec[1], next_vec[2], last)
+
+            tmp.insert(0, first)
+            tmp.append(last)
+
+            for i in xrange(1, len(tmp)-1):
+                cmds.cutKey(self._spheres[i-1][0], at="translateY")
+                self.handleDrivenKeys(tmp[i-1], tmp[i], tmp[i+1], self._spheres[i-1])
+
+            tmp.pop(0)
+            tmp.pop()
+            cmds.delete(first)
+            cmds.delete(last)
 
     def getCamElevation(self):
         """
@@ -351,6 +376,33 @@ class CameraAnimation():
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=1.0/2*self._camSpeed+t)
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
+        tmp = self._trackway
+        if tmp is not None:
+            first_pt = (cmds.getAttr(tmp[0]+".translateX"), 0, cmds.getAttr(tmp[0]+".translateZ"))
+            sec_pt = (cmds.getAttr(tmp[1]+".translateX"), 0, cmds.getAttr(tmp[1]+".translateZ"))
+            prev_vec = tuple([sec_pt[j]-first_pt[j] for j in range(3)])
+            prev_vec = tuple([first_pt[i] - prev_vec[i] for i in range(3)])
+            seclast_pt = (cmds.getAttr(tmp[-2]+".translateX"), 0, cmds.getAttr(tmp[-2]+".translateZ"))
+            last_pt = (cmds.getAttr(tmp[-1]+".translateX"), 0, cmds.getAttr(tmp[-1]+".translateZ"))
+            next_vec = tuple([last_pt[j]-seclast_pt[j] for j in range(3)])
+            next_vec = tuple([last_pt[j]+next_vec[j] for j in range(3)])
+            first = cmds.polySphere(r=1)
+            cmds.move(prev_vec[0], prev_vec[1], prev_vec[2], first)
+            last = cmds.polySphere(r=1)
+            cmds.move(next_vec[0], next_vec[1], next_vec[2], last)
+
+            tmp.insert(0, first)
+            tmp.append(last)
+
+            for i in xrange(1, len(tmp)-1):
+                cmds.cutKey(self._spheres[i-1][0], at='translateY')
+                self.handleDrivenKeys(tmp[i-1], tmp[i], tmp[i+1], self._spheres[i-1])
+
+            tmp.pop(0)
+            tmp.pop()
+            cmds.delete(first)
+            cmds.delete(last)
+
     def getAnimAngle(self):
         """
         :return: Camera angle.
@@ -370,19 +422,6 @@ class CameraAnimation():
         :return: Focal length.
         """
         return self._focalLength
-
-    def setDwell(self, t):
-        """
-        :param t: Set _dwell to t
-        :return: None.
-        """
-        self._dwell = t
-
-    def getDwell(self):
-        """
-        :return: Dwell time on turnaround.
-        """
-        return self._dwell
 
     def createMainCamera(self):
         """
@@ -467,19 +506,81 @@ class CameraAnimation():
     def createVisualizerCylinders(self):
         self._shaders = []
         self._spheres = []
-        for track in self._trackway:
-            newSphere = cmds.polyCylinder(r=20)
-            cmds.setAttr(newSphere[0]+".scaleY", 0.5)
-            cmds.setAttr(newSphere[0]+".translateX", cmds.getAttr(track+".translateX"))
-            cmds.setAttr(newSphere[0]+".translateZ", cmds.getAttr(track+".translateZ"))
-            cmds.setAttr(newSphere[0]+".translateY", -10)
-            shader = self.createHotColdConstantColor(self.getUnc(track))
+        tmp = self._trackway
+        first_pt = (cmds.getAttr(tmp[0]+".translateX"), 0, cmds.getAttr(tmp[0]+".translateZ"))
+        sec_pt = (cmds.getAttr(tmp[1]+".translateX"), 0, cmds.getAttr(tmp[1]+".translateZ"))
+        prev_vec = tuple([sec_pt[j]-first_pt[j] for j in range(3)])
+        prev_vec = tuple([first_pt[i] - prev_vec[i] for i in range(3)])
+        seclast_pt = (cmds.getAttr(tmp[-2]+".translateX"), 0, cmds.getAttr(tmp[-2]+".translateZ"))
+        last_pt = (cmds.getAttr(tmp[-1]+".translateX"), 0, cmds.getAttr(tmp[-1]+".translateZ"))
+        next_vec = tuple([last_pt[j]-seclast_pt[j] for j in range(3)])
+        next_vec = tuple([last_pt[j]+next_vec[j] for j in range(3)])
+        first = cmds.polySphere(r=1)
+        cmds.move(prev_vec[0], prev_vec[1], prev_vec[2], first)
+        last = cmds.polySphere(r=1)
+        cmds.move(next_vec[0], next_vec[1], next_vec[2], last)
+
+        tmp.insert(0, first)
+        tmp.append(last)
+
+        for i in xrange(1, len(tmp)-1):
+            newSphere = cmds.polyCylinder(r=20, h=20)
+            cmds.setAttr(newSphere[0]+".translateX", cmds.getAttr(tmp[i]+".translateX"))
+            cmds.setAttr(newSphere[0]+".translateZ", cmds.getAttr(tmp[i]+".translateZ"))
+            cmds.setAttr(newSphere[0]+".translateY", -20)
+            shader = self.createHotColdConstantColor(self.getUnc(tmp[i]))
             if self.lengthUnc or self.widthUnc:
                 cmds.select(newSphere)
                 cmds.hyperShade(assign=shader)
             self._shaders.append(shader)
             self._spheres.append(newSphere)
 
+            self.handleDrivenKeys(tmp[i-1], tmp[i], tmp[i+1], newSphere)
+
+        cmds.delete(first)
+        cmds.delete(last)
+        tmp.pop(0)
+        tmp.pop()
+
+    def handleDrivenKeys(self, prev, curr, next, sphere):
+        tmp_vec = tuple([cmds.getAttr(curr+".translateX"), 0, cmds.getAttr(curr+".translateZ")])
+        # MAGIC NUMBER HERE, FEEL FREE TO REDEFINE!!!!!!!!!
+        length = 50 if self._camAngle == 0 or self._camElevation == 0 else self._camElevation/math.tan(self._camAngle)
+
+        # make first directional vector off of change in coordinates between previous and this track
+        if "Sphere" in prev[0]:
+            prev_tmp_vec = tuple([cmds.getAttr(prev[0]+".translateX"), 0, cmds.getAttr(prev[0]+".translateZ")])
+        else:
+            prev_tmp_vec = tuple([cmds.getAttr(prev+".translateX"), 0, cmds.getAttr(prev+".translateZ")])
+        prev_vec = tuple([tmp_vec[j]-prev_tmp_vec[j] for j in range(3)])
+        prev_length = math.sqrt(math.fsum([prev_vec[j]**2 for j in range(3)]))
+        prev_vec = tuple([prev_vec[j]*1.5*length/prev_length for j in range(3)])
+        prev_pt = tuple([tmp_vec[j]-prev_vec[j] for j in range(3)])
+        sec_prev_pt = tuple([tmp_vec[j]-2.0/3*prev_vec[j] for j in range(3)])
+        diff_height = float(self.getUnc(curr))*100+20
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateX", dv=prev_pt[0], v=-20)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateZ", dv=prev_pt[2], v=-20)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateX", dv=sec_prev_pt[0], v=diff_height)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateZ", dv=sec_prev_pt[2], v=diff_height)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateX", dv=tmp_vec[0], v=-20)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateZ", dv=tmp_vec[2], v=-20)
+
+        # make second directional vector off of change in coordinates between this track and next
+        if "Sphere" in next[0]:
+            next_tmp_vec = tuple([cmds.getAttr(next[0]+".translateX"), 0, cmds.getAttr(next[0]+".translateZ")])
+        else:
+            next_tmp_vec = tuple([cmds.getAttr(next+".translateX"), 0, cmds.getAttr(next+".translateZ")])
+        next_vec = tuple([next_tmp_vec[j]-tmp_vec[j] for j in range(3)])
+        next_length = math.sqrt(math.fsum([next_vec[j]**2 for j in range(3)]))
+        next_vec = tuple([next_vec[j]*1.5*length/next_length for j in range(3)])
+        next_pt = tuple([tmp_vec[j]+next_vec[j] for j in range(3)])
+        sec_next_pt = tuple([tmp_vec[j]+2.0/3*next_vec[j] for j in range(3)])
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateX", dv=next_pt[0], v=-20)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateZ", dv=next_pt[2], v=-20)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateX", dv=sec_next_pt[0], v=diff_height)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateZ", dv=sec_next_pt[2], v=diff_height)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateX", dv=tmp_vec[0], v=-20)
+        cmds.setDrivenKeyframe(sphere[0]+".translateY", cd=self._mainCam[0]+".translateZ", dv=tmp_vec[2], v=-20)
 
     def createHotColdConstantColor(self, uncertainty):
         new_shade = cmds.shadingNode('blinn', asShader=True)
@@ -487,8 +588,6 @@ class CameraAnimation():
         red = 0 + ((float(uncertainty)*10)/2)
         cmds.setAttr(new_shade+".color", red,0,blue, type="double3")
         return new_shade
-
-
 
     def createHotColdShader(self, uncertainty):
         """
@@ -519,8 +618,6 @@ class CameraAnimation():
                 cmds.select(cyl)
                 cmds.hyperShade(assign=shade)
 
-
-
     def getUnc(self, track):
         num = 0
         res = 0
@@ -533,10 +630,3 @@ class CameraAnimation():
         if num is not 0:
             return float(res)/num
         return 0
-
-
-
-
-
-
-
