@@ -52,6 +52,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.angleSbox.valueChanged.connect(self.handleAngle)
         self.speedSbox.valueChanged.connect(self.handleSpeed)
         self.fLengthSbox.valueChanged.connect(self.handleFocal)
+        # self.dwellSbx.valueChanged.connect(self.handleDwell)
 
         # Connect trackway creation buttons
         self.selectTrackwayCamBtn.clicked.connect(self.handleCreateCam)
@@ -267,6 +268,14 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         fLength = self.fLengthSbox.value()
         self._animation.setFocalLength(fLength)
+
+    # def handleDwell(self):
+    #     """
+    #     Set camera dwell on turnaround to the value of the dwell selection box.
+    #     :return:
+    #     """
+    #     dwell = self.dwellSBox.value()
+    #     self._animation.setDwell(dwell)
 
     def handleWidthUnc(self):
         """

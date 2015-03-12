@@ -281,6 +281,7 @@ class CameraAnimation():
         self._motionPath = None
         self._spheres = []
         self._shaders = []
+        self._dwell = 120
 
     def setStartingTrack(self, track):
         """
@@ -334,20 +335,16 @@ class CameraAnimation():
         """
         self._camAngle = angle
         if self._mainCam is not None:
-            cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
-            # At start, camera has _camAngle.
+            max_u = cmds.getAttr(self._motionPath+'.uValue', time=self._camSpeed)
+            cmds.setAttr(self._motionPath+'.sideTwist', self._camAngle)
+            # Function derived through experimentation for good track turnaround aesthetics
+            t = 90*math.sqrt(6)*(2.0/3)**(max_u/8)
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
-            # At start of turnaround in path, keep angle at _camAngle
-            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*1.0/4)
-            # After 3/8 of path, move camera to orthogonal view to avoid looking off into the abyss.
-            cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*3.0/8)
-            # At halfway point, keep angle orthogonal.
-            cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*1.0/2)
-            # At 5/8 of the total curve, move the angle to 2/3 of _camAngle for 'smooth' transition.
-            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle*2.0/3, t=self._camSpeed*5.0/8)
-            # At 3/4 of the total curve, movve the angle to the full _camAngle
-            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
-            # Keep angle at _camAngle to the end of the curve.
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=1.0/2*self._camSpeed-t)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=1.0/2*self._camSpeed-t/2)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=1.0/2*self._camSpeed)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=2.0/3*self._camAngle, t=1.0/2*self._camSpeed+t/2)
+            cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=1.0/2*self._camSpeed+t)
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
     def getAnimAngle(self):
@@ -369,6 +366,19 @@ class CameraAnimation():
         :return: Focal length.
         """
         return self._focalLength
+
+    def setDwell(self, t):
+        """
+        :param t: Set _dwell to t
+        :return: None.
+        """
+        self._dwell = t
+
+    def getDwell(self):
+        """
+        :return: Dwell time on turnaround.
+        """
+        return self._dwell
 
     def createMainCamera(self):
         """
@@ -438,21 +448,16 @@ class CameraAnimation():
         :return: None
         """
         self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
-        # Nimble bridge doesn't allow you to use std parameter in cmds.pathAnimation
-        cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
-        # At start, camera has _camAngle.
+        max_u = cmds.getAttr(self._motionPath+'.uValue', time=self._camSpeed)
+        cmds.setAttr(self._motionPath+'.sideTwist', self._camAngle)
+        # Function derived through experimentation for good track turnaround aesthetics
+        t = 90*math.sqrt(6)*(2.0/3)**(max_u/8)
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
-        # At start of turnaround in path, keep angle at _camAngle
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*1.0/4)
-        # After 3/8 of path, move camera to orthogonal view to avoid looking off into the abyss.
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*3.0/8)
-        # At halfway point, keep angle orthogonal.
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*1.0/2)
-        # At 5/8 of the total curve, move the angle to 2/3 of _camAngle for 'smooth' transition.
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle*2.0/3, t=self._camSpeed*5.0/8)
-        # At 3/4 of the total curve, movve the angle to the full _camAngle
-        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
-        # Keep angle at _camAngle to the end of the curve.
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=1.0/2*self._camSpeed-t)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=1.0/2*self._camSpeed-t/2)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=1.0/2*self._camSpeed)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=2.0/3*self._camAngle, t=1.0/2*self._camSpeed+t/2)
+        cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=1.0/2*self._camSpeed+t)
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
     def createVisualizerSpheres(self):
@@ -469,8 +474,6 @@ class CameraAnimation():
             cmds.hyperShade(assign=shader)
             self._shaders.append(shader)
             self._spheres.append(newSphere)
-
-
 
     def createHotColdShader(self, uncertainty):
         """
