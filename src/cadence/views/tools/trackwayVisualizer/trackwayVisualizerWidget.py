@@ -313,6 +313,7 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         else:
             self.displayWidth = False
         self._animation.widthUnc = self.displayWidth
+        self._animation.updateUncDisplay()
 
 
 
