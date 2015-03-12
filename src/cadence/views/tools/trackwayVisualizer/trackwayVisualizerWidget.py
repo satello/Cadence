@@ -87,6 +87,13 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         self.perspCamBtn.clicked.connect(self.handlePerspCamBtn)
         self.trackCamBtn.clicked.connect(self.handleTrackCamBtn)
 
+        # Set shader options
+        self.shadeCombo.insertItem(0,"Solid")
+        self.shadeCombo.insertItem(1,"Ramp (For Render)")
+
+        self.shadeGoBtn.clicked.connect(self.changeShader)
+
+
         self.widthUnc, self.lengthUnc, self.rotUnc = 0.0, 0.0, 0.0
         self.displayWidth, self.displayLength, self.displayRotation = False, False, False
 
@@ -388,3 +395,14 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
         self._trackwayVisualizer.selectTrackCam(self._animation._mainCam)
 
+
+    def changeShader(self):
+        """
+        set the current shader type of cylinders
+        :return:
+        """
+        if self.shadeCombo.currentIndex() == 0:
+            self._animation.ramp = False
+        elif self.shadeCombo.currentIndex() == 1:
+            self._animation.ramp = True
+        self._animation.updateShaderChoice()

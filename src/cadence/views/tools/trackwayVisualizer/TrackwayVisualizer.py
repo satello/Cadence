@@ -284,6 +284,7 @@ class CameraAnimation():
         self._maxUncertainty = 0.2
         self.lengthUnc = False
         self.widthUnc = False
+        self.ramp = False
 
     def setStartingTrack(self, track):
         """
@@ -528,7 +529,10 @@ class CameraAnimation():
             cmds.setAttr(newSphere[0]+".translateX", cmds.getAttr(tmp[i]+".translateX"))
             cmds.setAttr(newSphere[0]+".translateZ", cmds.getAttr(tmp[i]+".translateZ"))
             cmds.setAttr(newSphere[0]+".translateY", -20)
-            shader = self.createHotColdConstantColor(self.getUnc(tmp[i]))
+            if self.ramp:
+                shader = self.createHotColdShader(self.getUnc(tmp[i]))
+            else:
+                shader = self.createHotColdConstantColor(self.getUnc(tmp[i]))
             if self.lengthUnc or self.widthUnc:
                 cmds.select(newSphere)
                 cmds.hyperShade(assign=shader)
@@ -600,7 +604,7 @@ class CameraAnimation():
         new_shade = cmds.shadingNode('rampShader', asShader=True)
         cmds.setAttr(new_shade+".color[0].color_Color", 1,0,0, type="double3")
         cmds.setAttr(new_shade+".color[1].color_Color", 0,0,1, type="double3")
-        cmds.setAttr(new_shade+".color[1].color_Position", 0)
+        cmds.setAttr(new_shade+".color[1].color_Position", (1-(10*uncertainty)))
         cmds.setAttr(new_shade+".color[0].color_Position", 1)
         cmds.setAttr(new_shade+".color[0].color_Interp", 1)
         cmds.setAttr(new_shade+".color[1].color_Interp", 1)
@@ -630,3 +634,15 @@ class CameraAnimation():
         if num is not 0:
             return float(res)/num
         return 0
+
+    def updateShaderChoice(self):
+        for i in range(0, len(self._shaders)):
+            track = self._trackway[i]
+            if self.ramp:
+                self._shaders[i] = self.createHotColdShader(self.getUnc(track))
+            else:
+                self._shaders[i] = self.createHotColdConstantColor(self.getUnc(track))
+
+            cmds.select(self._spheres[i])
+            cmds.hyperShade(assign=self._shaders[i])
+
