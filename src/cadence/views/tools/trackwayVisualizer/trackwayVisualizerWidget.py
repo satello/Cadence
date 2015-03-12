@@ -74,7 +74,6 @@ class TrackwayVisualizerWidget(PyGlassWidget):
         # Connect display uncertainty buttons
         self.displayWidthCkbx.clicked.connect(self.handleDisplayWidth)
         self.displayLengthCkbx.clicked.connect(self.handleDisplayLength)
-        self.displayRotationCkbx.clicked.connect(self.handleDisplayRotation)
 
         # Provide convention pause/play icons for the trackway animation buttons
         self.pauseBtn.setIcon(QtGui.QIcon(self.getResourcePath('mediaIcons', 'pause.png')))
@@ -317,15 +316,15 @@ class TrackwayVisualizerWidget(PyGlassWidget):
 
 
 
-    def handleDisplayHeight(self):
+    def handleDisplayLength(self):
         """
         Set display height value to the state of the display height check box.
         :return: None.
         """
 
-        if self.displayHeightCkbx.isChecked():
-            self.displayHeight = True
-            self.displayHeight = True
+        if self.displayLengthCkbx.isChecked():
+            self.displayLength = True
+            self.displayLength = True
         else:
             self.displayLength = False
         self._animation.lengthUnc = self.displayLength

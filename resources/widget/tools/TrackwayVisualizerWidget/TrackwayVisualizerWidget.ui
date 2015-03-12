@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1084</width>
+    <width>1947</width>
     <height>594</height>
    </rect>
   </property>
@@ -80,36 +80,6 @@
    <item>
     <widget class="QWidget" name="VisualizationWidget" native="true">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="1">
-       <widget class="QLabel" name="label_7">
-        <property name="font">
-         <font>
-          <family>Abadi MT Condensed Extra Bold</family>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Trackway Visualization Camera/Path Functionality</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="font">
-         <font>
-          <family>Abadi MT Condensed Extra Bold</family>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Uncertainty Trackway Traversal Functionality</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
        <widget class="QWidget" name="navigationWidget" native="true">
         <property name="sizePolicy">
@@ -1189,21 +1159,6 @@
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QCheckBox" name="displayRotationCkbx">
-              <property name="font">
-               <font>
-                <family>Abadi MT Condensed Extra Bold</family>
-                <pointsize>13</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Display Rotation in Animation</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </widget>
          </item>
@@ -1397,6 +1352,36 @@
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_7">
+        <property name="font">
+         <font>
+          <family>Abadi MT Condensed Extra Bold</family>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Trackway Visualization Camera/Path Functionality</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="font">
+         <font>
+          <family>Abadi MT Condensed Extra Bold</family>
+          <pointsize>20</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Uncertainty Trackway Traversal Functionality</string>
+        </property>
        </widget>
       </item>
      </layout>
