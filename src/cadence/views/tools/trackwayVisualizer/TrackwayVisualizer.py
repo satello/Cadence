@@ -36,8 +36,11 @@ class TrackwayVisualizer(object):
 
     #___________________________________________________________________________________________________ getFirstTrack
     def getFirstTrack(self):
-        """ Returns the track model corresponding to the first track in a series, based on a given
-            selection of one or more track nodes. """
+        """
+        Returns the track corresponding to the first track in a series, based on a given
+        selection of one or more track nodes.
+        :return: First track.
+        """
 
         selectedTracks = self.getSelectedTracks()
         if not selectedTracks:
@@ -52,6 +55,12 @@ class TrackwayVisualizer(object):
         return t
 
     def getLastTrack(self):
+        """
+        Returns the track corresponding to the last track in a series, based on a given
+        selection of one or more track nodes.
+        :return: Last track.
+        """
+
         selectedTracks = self.getSelectedTracks()
         if not selectedTracks:
             return None
@@ -66,20 +75,36 @@ class TrackwayVisualizer(object):
 
     # __________________________________________________________________________________________________ getSelectedTracks
     def getSelectedTracks(self):
+        """
+        Returns a list of selected tracks in the Maya environment.
+        :return: List of tracks.
+        """
         return cmds.ls('Track*', sl=True)
 
     #___________________________________________________________________________________________________ getPreviousTrack
     def getPreviousTrack(self, track):
-        """ This method just encapsulates the session getter. """
+        """
+        Returns the previous track attribute of the track param.
+        :param: track: Track to query on.
+        :return: Previous track.
+        """
         return cmds.getAttr(track+'.cadence_prevNode')
 
     def getNextTrack(self, track):
-        #print cmds.listAttr(track)
+        """
+        Returns the next track attribute of the track param.
+        :param track: Track to query on.
+        :return: Next track.
+        """
         return cmds.getAttr(track+".cadence_nextNode")
 
     def selectTrack(self, track):
-        """ Select the node corresponding to this track model instance, then focus the camera
-            upon this node. """
+        """
+        Select the node corresponding to this track model instance, then focus the camera
+        upon this node.
+        :param: track: Track to select.
+        :return: None.
+        """
 
         if track:
             cmds.select(track)
@@ -88,14 +113,18 @@ class TrackwayVisualizer(object):
             cmds.select(clear=True)
 
     def setCameraFocus(self):
-        """ Center the current camera (CadenceCam or persp) on the currently selected node. If
-            using the CadenceCam, the view is fitted to FIT_FACTOR; with the persp camera, it is
-            not so contrained. """
+        """
+        Center the current camera (TrackwayCam or persp) on the currently selected node.
+        :return: None.
+        """
 
         cmds.viewFit(fitFactor=self.FIT_FACTOR, animate=True)
 
     def getFirstSelectedTrack(self):
-        """ Returns the track model corresponding to the first of a series of selected nodes. """
+        """
+        Returns the track corresponding to the first of a series of selected nodes.
+        :return: First selected track.
+        """
 
         selectedTracks = self.getSelectedTracks()
         if not selectedTracks:
@@ -111,7 +140,11 @@ class TrackwayVisualizer(object):
         return t
 
     def getLastSelectedTrack(self):
-        """ Returns the track model corresponding to the last of a series of selected nodes. """
+        """
+        Returns the track corresponding to the last of a series of selected nodes.
+        :return: Last selected track.
+        """
+
         selectedTracks = self.getSelectedTracks()
         if not selectedTracks:
             return None
@@ -125,6 +158,14 @@ class TrackwayVisualizer(object):
         return t
 
     def getNextUnc(self, track, widthUnc, lengthUnc, rotUnc):
+        """
+        :param track: Current track.
+        :param widthUnc: Width uncertainty threshold to exceed.
+        :param lengthUnc: Length uncertainty threshold to exceed.
+        :param rotUnc: Rotational uncertainty threshold to exceed.
+        :return: The next track to meet param-based uncertainty thresholds.
+        """
+
         next = cmds.getAttr(track+'.cadence_nextNode')
 
         while next != None:
@@ -137,6 +178,13 @@ class TrackwayVisualizer(object):
         return None
 
     def getPrevUnc(self, track, widthUnc, lengthUnc, rotUnc):
+        """
+        :param track: Current track.
+        :param widthUnc: Width uncertainty threshold to exceed.
+        :param lengthUnc: Length uncertainty threshold to exceed.
+        :param rotUnc: Rotational uncertainty threshold to exceed.
+        :return: The previous track to meet param-based uncertainty threshold.
+        """
         prev = cmds.getAttr(track+'.cadence_prevNode')
 
         while prev != None:
@@ -149,6 +197,12 @@ class TrackwayVisualizer(object):
         return None
 
     def getFirstUnc(self, widthUnc, lengthUnc, rotUnc):
+        """
+        :param widthUnc: Width uncertainty threshold to exceed.
+        :param lengthUnc: Length uncertainty threshold to exceed.
+        :param rotUnc: Rotational uncertainty threshold to exceed.
+        :return: The first track to meet param-based uncertainty threshold.
+        """
 
         selectedTracks = self.getSelectedTracks()
         if not selectedTracks:
@@ -163,6 +217,12 @@ class TrackwayVisualizer(object):
         return t
 
     def getLastUnc(self, widthUnc, lengthUnc, rotUnc):
+        """
+        :param widthUnc: Width uncertainty threshold to exceed.
+        :param lengthUnc: Length uncertainty threshold to exceed.
+        :param rotUnc: Rotational uncertainty threshold to exceed.
+        :return: The last track to meet param-based uncertainty threshold.
+        """
 
         selectedTracks = self.getSelectedTracks()
         if not selectedTracks:
@@ -177,6 +237,10 @@ class TrackwayVisualizer(object):
         return t
 
     def getSelectedTrackway(self):
+        """
+        :return: A list of tracks denoting the selected trackway.
+        """
+
         tracks = list()
         trav = self.getFirstTrack()
 
@@ -187,10 +251,18 @@ class TrackwayVisualizer(object):
         return tracks
 
     def selectPerspCam(self):
+        """
+        Selects the persp cam in the Maya environment.
+        :return: None.
+        """
         cmds.lookThru('persp')
         self.setCameraFocus()
 
     def selectTrackCam(self, cam):
+        """
+        :param cam: The camera to be selected.
+        :return: None.
+        """
         cmds.lookThru(cam[0])
         #self.setCameraFocus()
 
@@ -198,7 +270,7 @@ class CameraAnimation():
 
     def __init__(self):
         self._camElevation = 0
-        self._camSpeed = 120
+        self._camSpeed = 480
         self._camAngle = 0
         self._focalLength = .1
         self._startingTrack = None
@@ -214,60 +286,105 @@ class CameraAnimation():
         self.widthUnc = False
 
     def setStartingTrack(self, track):
+        """
+        :param track: Track to be set.
+        :return: None.
+        """
         self._startingTrack = track
 
     def setTrackway(self, trackway):
+        """
+        :param trackway: Trackway to be set.
+        :return: None.
+        """
         self._trackway = trackway
 
     def setCamElevation(self, height):
+        """
+        :param height: Set _trackwayCurve to this height.
+        :return: None.
+        """
         self._camElevation = height
         if self._trackWayCurve is not None:
             cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
 
     def getCamElevation(self):
+        """
+        :return: Cam elevation.
+        """
         return self._camElevation
 
     def setAnimSpeed(self, speed):
+        """
+        :param speed: Set _camSpeed to speed.
+        :return: None.
+        """
         # Nimble bridge doesn't allow you to use time parameter in cmds.keyframe(), so we resort to creating a new path.
         self._camSpeed = speed
         cmds.delete(self._motionPath)
         self.setToCurve()
 
     def getAnimSpeed(self):
+        """
+        :return: Camera speed.
+        """
         return self._camSpeed
 
     def setAnimAngle(self, angle):
+        """
+        :param angle: Set _camAngle to angle.
+        :return: None.
+        """
         self._camAngle = angle
         if self._mainCam is not None:
             cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+            # At start, camera has _camAngle.
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
-
+            # At start of turnaround in path, keep angle at _camAngle
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*1.0/4)
-
+            # After 3/8 of path, move camera to orthogonal view to avoid looking off into the abyss.
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*3.0/8)
-
+            # At halfway point, keep angle orthogonal.
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*1.0/2)
-
+            # At 5/8 of the total curve, move the angle to 2/3 of _camAngle for 'smooth' transition.
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle*2.0/3, t=self._camSpeed*5.0/8)
-
+            # At 3/4 of the total curve, movve the angle to the full _camAngle
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
-
+            # Keep angle at _camAngle to the end of the curve.
             cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
     def getAnimAngle(self):
+        """
+        :return: Camera angle.
+        """
         return self._camAngle
 
     def setFocalLength(self, length):
+        """
+        :param length: Set _focalLength to length.
+        :return: None.
+        """
         self._focalLength = length
         cmds.setAttr(self._mainCam[0]+".focalLength", self._focalLength)
 
     def getFocalLength(self):
+        """
+        :return: Focal length.
+        """
         return self._focalLength
 
     def createMainCamera(self):
+        """
+        Create new camera.
+        :return: None.
+        """
         self._mainCam = cmds.camera()
 
     def positionCamOnTrack(self):
+        """
+        Sets starting position of cam to the starting track.
+        :return: None.
+        """
         xPos = cmds.getAttr(self._startingTrack+".translateX")
         cmds.setAttr(self._mainCam[0]+".translateX", xPos)
 
@@ -277,20 +394,34 @@ class CameraAnimation():
         cmds.setAttr(self._mainCam[0]+".translateY", self._camElevation)
 
     def makeCurve(self):
-        pos = []
-        #pos.append((cmds.getAttr(self._trackway[0]+".translateX")-100,100,cmds.getAttr(self._trackway[0]+".translateZ")-100))
+        """
+        Creates curve in Maya environment based on track coordinates, and sets the camera's motion to
+        this curve.
+        :return: None.
+        """
+        pos = list()
+        # Need to change to take first two coordinates of track, and extend this vector out in the opposite direction.
+        pos.append((cmds.getAttr(self._trackway[0]+".translateX")-100, 100, cmds.getAttr(self._trackway[0]+".translateZ")-100))
+
         for track in self._trackway:
             pos.append(((cmds.getAttr(track+".translateX")), 0, cmds.getAttr(track+".translateZ")))
+
+        # Get reverse iterator for current list of tracks
         it = reversed(pos)
-        last_vec = [(cmds.getAttr(self._trackway[-2]+".translateX"),0, cmds.getAttr(self._trackway[-2]+".translateZ"))]
-        last_vec += [(cmds.getAttr(self._trackway[-1]+".translateX"),0, cmds.getAttr(self._trackway[-1]+".translateZ"))]
-        #dist = math.sqrt((last_vec[0][0]-last_vec[1][0])**2 + (last_vec[0][1] - last_vec[1][1])**2)
+
+        # Get list of last two points in pos list.
+        last_vec = [pos[-2], pos[-1]]
+
         dir_vec = tuple([(last_vec[1][i]-last_vec[0][i])/2 for i in range(3)])
-        norm_vec = tuple([-1*dir_vec[2], 0, dir_vec[0]])
+        norm_vec = tuple([-1.5*dir_vec[2], 0, 1.5*dir_vec[0]])
         center_pt = (cmds.getAttr(self._trackway[-1]+".translateX")+dir_vec[0],0, cmds.getAttr(self._trackway[-1]+".translateZ")+dir_vec[2])
+
+        # Put three corners of turnaround into pos list.
         pos.append(tuple([center_pt[i]+norm_vec[i] for i in range(3)]))
         pos.append(tuple([center_pt[i]+dir_vec[i] for i in range(3)]))
         pos.append(tuple([center_pt[i] - norm_vec[i] for i in range(3)]))
+
+        # Put reversed initial pos list into pos.
         rev = list()
         try:
             while True:
@@ -299,26 +430,32 @@ class CameraAnimation():
             pass
         pos += rev
 
-        self._trackWayCurve = cmds.curve(name='camCurve', p=pos)
+        # Set _trackWayCurve to created curve based on the pos list, and move the track to _camElevation.
+        self._trackWayCurve = cmds.curve(name='camCurve',p=pos)
         self._baseTrackwayCurve = cmds.duplicate(self._trackWayCurve, name='baseCurve')
         cmds.setAttr(self._trackWayCurve+".translateY", self._camElevation)
 
     def setToCurve(self):
-        # Nimble bridge doesn't allow you to use std parameter in cmds.pathAnimation
+        """
+        Keyframes curve to make the trackway visualization look 'pretty.'
+        :return: None
+        """
         self._motionPath = cmds.pathAnimation(self._mainCam[0], etu=self._camSpeed, follow=True, c=self._trackWayCurve)
+        # Nimble bridge doesn't allow you to use std parameter in cmds.pathAnimation
         cmds.setAttr(self._motionPath+".sideTwist", self._camAngle)
+        # At start, camera has _camAngle.
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=0)
-
+        # At start of turnaround in path, keep angle at _camAngle
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*1.0/4)
-
+        # After 3/8 of path, move camera to orthogonal view to avoid looking off into the abyss.
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*3.0/8)
-
+        # At halfway point, keep angle orthogonal.
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=0, t=self._camSpeed*1.0/2)
-
+        # At 5/8 of the total curve, move the angle to 2/3 of _camAngle for 'smooth' transition.
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle*2.0/3, t=self._camSpeed*5.0/8)
-
+        # At 3/4 of the total curve, movve the angle to the full _camAngle
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed*3.0/4)
-
+        # Keep angle at _camAngle to the end of the curve.
         cmds.setKeyframe(self._motionPath, at='sideTwist', v=self._camAngle, t=self._camSpeed)
 
     def createVisualizerCylinders(self):
